@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "307288433655",
+    "project_id": "my-travaly-bcafe",
+    "storage_bucket": "my-travaly-bcafe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307288433655:android:9e227146aa1867e03304f2",
+        "android_client_info": {
+          "package_name": "com.example.my_travaly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXbT30jaD4bO6RezKAYssCFlw9JM6oycs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
