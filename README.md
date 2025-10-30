@@ -1,16 +1,39 @@
-# my_travaly
+# My-Travaly
 
-A new Flutter project.
+MyTravaly is a Flutter hotel booking experience built with Clean Architecture, BLoC state management, and Google Sign-In support.
+
+## Requirements
+
+- Flutter 3.24.x
+- Dart 3.5.x
+- Firebase project configured for Google Sign-In
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1. Fetch dependencies:
 
-A few resources to get you started if this is your first Flutter project:
+   ```bash
+   flutter pub get
+   ```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+2. Configure your Firebase project and download the platform-specific config files (`google-services.json`, `GoogleService-Info.plist`, etc.). Place them in the provided locations under `android/` and `ios/` respectively.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+3. Run the app:
+
+   ```bash
+   flutter run
+   ```
+
+## Architecture Highlights
+
+- Clean Architecture separation (`core`, `features`, `domain`, `data`, `presentation`)
+- Dependency injection via `get_it` in `lib/injection_container.dart`
+- BLoC for Google Sign-In, hotel listings, and paginated search
+- Remote APIs consumed through structured data sources and repositories
+
+## Key Features
+
+- Google Sign-In (frontend flow)
+- Device registration and visitor token handling
+- Home page with popular hotel stays and autocomplete search
+- Search results with infinite scrolling pagination
