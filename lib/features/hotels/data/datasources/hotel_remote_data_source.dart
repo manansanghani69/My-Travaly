@@ -125,6 +125,7 @@ class HotelRemoteDataSourceImpl implements HotelRemoteDataSource {
   @override
   Future<List<HotelModel>> getSearchResults(SearchParams params) async {
     await _ensureVisitorToken();
+    final cappedLimit = max(1, min(params.limit, 5));
 
     final criteria = <String, dynamic>{
       'searchType': params.searchType,
@@ -134,7 +135,7 @@ class HotelRemoteDataSourceImpl implements HotelRemoteDataSource {
       'rooms': params.rooms,
       'adults': params.adults,
       'children': params.children,
-      'limit': params.limit,
+      'limit': cappedLimit,
       'offset': params.offset,
       'accommodation': params.accommodation,
       'arrayOfExcludedSearchType': params.excludedSearchTypes,

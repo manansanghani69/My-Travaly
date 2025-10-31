@@ -3,158 +3,199 @@ import 'package:flutter/material.dart';
 
 import '../../domain/entities/hotel.dart';
 import '../../domain/entities/property.dart';
-import 'price_tag.dart';
-import 'rating_widget.dart';
 
-class HotelCard extends StatelessWidget {
+class HotelCard extends StatefulWidget {
   const HotelCard({super.key, required this.hotel});
 
   final Hotel hotel;
 
   @override
+  State<HotelCard> createState() => _HotelCardState();
+}
+
+class _HotelCardState extends State<HotelCard> {
+  bool _isPressed = false;
+
+  void _setPressed(bool value) {
+    setState(() => _isPressed = value);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 1.5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _HotelImage(imageUrl: hotel.propertyImage),
-          Padding(
-            padding: const EdgeInsets.all(16),
+    final hotel = widget.hotel;
+    final theme = Theme.of(context);
+    final rating = hotel.googleReview?.rating;
+    final reviewCount = hotel.googleReview?.totalReviews;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 120),
+        scale: _isPressed ? 0.97 : 1,
+        child: Material(
+          elevation: 1,
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.white,
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: () {},
+            onTapDown: (_) => _setPressed(true),
+            onTapCancel: () => _setPressed(false),
+            onTapUp: (_) => _setPressed(false),
+            splashColor: Colors.black.withValues(alpha: 0.05),
+            highlightColor: Colors.transparent,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        hotel.propertyName,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w700),
+                _HotelImageSection(
+                  imageUrl: hotel.propertyImage,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              hotel.propertyName,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF1C1C1C),
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 6),
+                            _LocationRow(address: hotel.address),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Icon(Icons.star_rounded,
+                                    color: Color(0xFFFFB400), size: 18),
+                                const SizedBox(width: 4),
+                                Text(
+                                  rating != null
+                                      ? rating.toStringAsFixed(1)
+                                      : hotel.propertyStar.toString(),
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF1C1C1C),
+                                  ),
+                                ),
+                                if (reviewCount != null && reviewCount > 0)
+                                  Text(
+                                    '  (${reviewCount.toString()})',
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: const Color(0xFF6F7A85),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    if (hotel.propertyType.isNotEmpty)
-                      _PropertyTypeBadge(propertyType: hotel.propertyType),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                RatingWidget(
-                  propertyStar: hotel.propertyStar,
-                  reviewRating: hotel.googleReview?.rating,
-                  totalReviews: hotel.googleReview?.totalReviews,
-                ),
-                const SizedBox(height: 12),
-                _AddressSection(address: hotel.address),
-                const SizedBox(height: 16),
-                PriceTag(
-                  primaryPrice: hotel.staticPrice,
-                  originalPrice: hotel.markedPrice,
+                      const SizedBox(width: 12),
+                      TextButton(
+                        onPressed: () {},
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xFF1976D2),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 10,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        child: const Text(
+                          'View Details',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class _HotelImage extends StatelessWidget {
-  const _HotelImage({required this.imageUrl});
+class _HotelImageSection extends StatelessWidget {
+  const _HotelImageSection({
+    required this.imageUrl,
+  });
 
   final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      width: double.infinity,
-      child: imageUrl.isEmpty
-          ? Container(
-              color: Colors.grey.shade200,
-              child: const Icon(Icons.hotel, size: 48, color: Colors.grey),
-            )
-          : CachedNetworkImage(
-              imageUrl: imageUrl,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                color: Colors.grey.shade200,
-                child: const Center(child: CircularProgressIndicator()),
-              ),
-              errorWidget: (context, url, error) => Container(
-                color: Colors.grey.shade200,
-                child: const Icon(
-                  Icons.broken_image,
-                  size: 48,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-    );
-  }
-}
-
-class _PropertyTypeBadge extends StatelessWidget {
-  const _PropertyTypeBadge({required this.propertyType});
-
-  final String propertyType;
-
-  @override
-  Widget build(BuildContext context) {
-    if (propertyType.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+    final placeholder = Container(
       decoration: BoxDecoration(
-        color: theme.colorScheme.secondary.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(20),
+        color: Colors.grey.shade200,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      child: Text(
-        propertyType,
-        style: theme.textTheme.labelMedium?.copyWith(
-          color: theme.colorScheme.secondary,
-          fontWeight: FontWeight.w600,
-        ),
+      child: const Center(
+        child: Icon(Icons.hotel_outlined, color: Colors.grey, size: 42),
+      ),
+    );
+
+    return SizedBox(
+      height: 180,
+      width: double.infinity,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        child: imageUrl.isEmpty
+            ? placeholder
+            : CachedNetworkImage(
+                imageUrl: imageUrl,
+                fit: BoxFit.cover,
+                placeholder: (_, __) => placeholder,
+                errorWidget: (_, __, ___) => placeholder,
+              ),
       ),
     );
   }
 }
 
-class _AddressSection extends StatelessWidget {
-  const _AddressSection({required this.address});
+class _LocationRow extends StatelessWidget {
+  const _LocationRow({required this.address});
 
   final PropertyAddress address;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final text = [
+      address.city,
+      address.state,
+      address.country,
+    ].where((element) => element.isNotEmpty).join(', ');
+
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(
+        const Icon(
           Icons.location_on_outlined,
-          color: theme.colorScheme.error,
-          size: 20,
+          size: 16,
+          color: Color(0xFF6F7A85),
         ),
         const SizedBox(width: 6),
         Expanded(
           child: Text(
-            [
-              address.addressLine,
-              address.city,
-              address.state,
-              address.country,
-            ].where((element) => element.isNotEmpty).join(', '),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.75),
+            text,
+            style: const TextStyle(
+              color: Color(0xFF6F7A85),
+              fontSize: 13,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],

@@ -9,63 +9,78 @@ class ShimmerHotelCard extends StatelessWidget {
     final baseColor = Colors.grey.shade300;
     final highlightColor = Colors.grey.shade100;
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Shimmer.fromColors(
         baseColor: baseColor,
         highlightColor: highlightColor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 180,
-              decoration: BoxDecoration(
-                color: baseColor,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 180,
+                decoration: BoxDecoration(
+                  color: baseColor,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 16,
-                    width: 180,
-                    decoration: _boxDecoration(baseColor),
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    height: 14,
-                    width: double.infinity,
-                    decoration: _boxDecoration(baseColor),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    height: 14,
-                    width: 140,
-                    decoration: _boxDecoration(baseColor),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    height: 20,
-                    width: 120,
-                    decoration: _boxDecoration(baseColor),
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _box(width: 200, height: 20, color: baseColor),
+                    const SizedBox(height: 12),
+                    _box(width: double.infinity, height: 16, color: baseColor),
+                    const SizedBox(height: 8),
+                    _box(width: 140, height: 14, color: baseColor),
+                    const SizedBox(height: 16),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: _box(
+                        width: 100,
+                        height: 32,
+                        color: baseColor,
+                        radius: 20,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  BoxDecoration _boxDecoration(Color color) {
-    return BoxDecoration(color: color, borderRadius: BorderRadius.circular(8));
+  static Widget _box({
+    required double width,
+    required double height,
+    required Color color,
+    double radius = 10,
+  }) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(radius),
+      ),
+    );
   }
 }

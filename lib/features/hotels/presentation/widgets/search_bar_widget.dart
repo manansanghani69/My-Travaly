@@ -63,25 +63,38 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
           child: TextField(
             controller: _controller,
             focusNode: _focusNode,
             decoration: InputDecoration(
-              hintText: 'Search by hotel, city, state, or country',
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.arrow_forward),
-                onPressed: () {
-                  final query = _controller.text.trim();
-                  if (query.isEmpty) return;
-                  _submitRequest(_requestFromQuery(query));
-                },
+              hintText: 'Search hotels, cities, destinations...',
+              hintStyle: const TextStyle(
+                color: Color(0xFF9299A1),
+                fontSize: 15,
+              ),
+              filled: true,
+              fillColor: const Color(0xFFF1F3F5),
+              prefixIcon: const Icon(
+                Icons.search_rounded,
+                color: Color(0xFF7C8894),
+                size: 24,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(24),
+                borderSide: BorderSide.none,
               ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(24),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
+            style: const TextStyle(
+              fontSize: 16,
+              color: Color(0xFF1C1C1C),
+            ),
+            textInputAction: TextInputAction.search,
             onChanged: _onQueryChanged,
             onSubmitted: (value) {
               final query = value.trim();
@@ -308,7 +321,7 @@ class _SuggestionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -329,8 +342,19 @@ class _SuggestionList extends StatelessWidget {
           final suggestion = suggestions[index];
           return ListTile(
             leading: const Icon(Icons.location_city_outlined),
-            title: Text(suggestion.valueToDisplay),
-            subtitle: Text(suggestion.type),
+            title: Text(
+              suggestion.valueToDisplay,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF212121),
+              ),
+            ),
+            subtitle: Text(
+              suggestion.type,
+              style: const TextStyle(
+                color: Color(0xFF757575),
+              ),
+            ),
             onTap: () => onSuggestionSelected(suggestion),
           );
         },
